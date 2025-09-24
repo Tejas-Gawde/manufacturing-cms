@@ -8,6 +8,8 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 320 }).notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   role: varchar("role", { length: 20 }).notNull(),
+  resetOtp: varchar("reset_otp", { length: 10 }),
+  resetOtpExpiresAt: timestamp("reset_otp_expires_at", { withTimezone: false }),
   createdAt: timestamp("created_at", { withTimezone: false })
     .defaultNow()
     .notNull(),

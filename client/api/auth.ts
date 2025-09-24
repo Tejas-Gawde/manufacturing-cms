@@ -32,3 +32,12 @@ export async function logout() {
   const { data } = await http.post("/auth/logout");
   return data;
 }
+
+export async function resetPassword(body: {
+  email: string;
+  otp: string;
+  newPassword: string;
+}) {
+  const { data } = await http.post("/auth/reset-password", body);
+  return data;
+}

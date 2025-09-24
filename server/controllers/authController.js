@@ -7,6 +7,8 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../utils/jwt.js";
+import { sendMail } from "../utils/mailer.js";
+import { sql } from "drizzle-orm";
 
 export async function signup(req, res) {
   const { name, email, password, role } = req.body;
@@ -84,8 +86,66 @@ export async function refresh(req, res) {
 }
 
 export async function forgotPassword(req, res) {
-  // Stub: In production, generate OTP, store and email user
-  return res.json({ message: "OTP sent if email exists" });
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: "Email is required" });
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    const successResponse = { message: "If the email exists, an OTP was sent" };
+    if (!user) return res.json(successResponse);
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    const ttlMinutes = Number(process.env.PASSWORD_RESET_TTL_MIN || 15);
+    const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
+
+    // Store OTP directly on the user record
+    await db
+      .update(users)
+      .set({ resetOtp: otp, resetOtpExpiresAt: expiresAt })
+      .where(eq(users.email, email));
+
+    const appName = process.env.APP_NAME || "Manufacturing CMS";
+    const subject = `${appName} Password Reset Code`;
+    const html = `
+      <p>Use the following code to reset your password:</p>
+      <h2 style="letter-spacing:4px;">${otp}</h2>
+      <p>This code expires in ${ttlMinutes} minutes.</p>
+    `;
+    try {
+      await sendMail({ to: email, subject, html });
+    } catch {}
+    return res.json(successResponse);
+  } catch (err) {
+    return res.status(500).json({ error: "Failed to process request" });
+  }
+}
+
+export async function resetPassword(req, res) {
+  const { email, otp, newPassword } = req.body || {};
+  if (!email || !otp || !newPassword)
+    return res.status(400).json({ error: "Missing fields" });
+  try {
+    const now = new Date();
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    if (!user || !user.resetOtp || !user.resetOtpExpiresAt)
+      return res.status(400).json({ error: "Invalid code" });
+    if (user.resetOtp !== otp)
+      return res.status(400).json({ error: "Invalid code" });
+    if (new Date(user.resetOtpExpiresAt) < now)
+      return res.status(400).json({ error: "Code expired" });
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await db.update(users).set({ passwordHash }).where(eq(users.email, email));
+
+    // Clear OTP fields after successful reset
+    await db
+      .update(users)
+      .set({ resetOtp: null, resetOtpExpiresAt: null })
+      .where(eq(users.email, email));
+
+    return res.json({ message: "Password updated" });
+  } catch (err) {
+    return res.status(500).json({ error: "Failed to reset password" });
+  }
 }
 
 export async function logout(req, res) {

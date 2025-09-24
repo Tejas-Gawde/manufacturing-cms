@@ -11,18 +11,43 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { signup } from "@/api/auth";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 const roles = ["admin", "manager", "operator", "inventory"];
 
 export default function SignupPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signup({ name, email, password, role });
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const data = await signup({ name, email, password, role });
+      const createdName = data?.user?.name || name;
+      toast.success(
+        createdName ? `Welcome, ${createdName}!` : "Account created"
+      );
+      router.push("/dashboard");
+    } catch (error: unknown) {
+      let message = "Signup failed";
+      if (isAxiosError(error)) {
+        message = error.response?.data?.error ?? error.message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -70,8 +95,8 @@ export default function SignupPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button className="w-full" type="submit">
-              Create Account
+            <Button className="w-full" type="submit" disabled={submitting}>
+              {submitting ? "Creating..." : "Create Account"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

@@ -13,6 +13,8 @@ await pool.query(`
     email VARCHAR(320) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     role VARCHAR(20) NOT NULL,
+    reset_otp VARCHAR(10),
+    reset_otp_expires_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
   )
 `);
