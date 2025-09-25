@@ -1,19 +1,17 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
-import { BOM, getBOMs } from "@/api/bom"; // Changed import
+import { BOM, getBOMs } from "@/api/bom";
 import { useEffect, useState } from "react";
-import { AddBOMDialog } from "@/components/AddBOMDialog"; // Changed import
+import { AddBOMDialog } from "@/components/AddBOMDialog";
 import { parseID } from "@/lib/utils";
 
 export default function BillOfMaterialsPage() {
-  // Changed function name
-  const [boms, setBOMs] = useState<BOM[]>([]); // Changed state and setter
+  const [boms, setBOMs] = useState<BOM[]>([]);
 
   const fetchBOMs = async () => {
-    // Changed function name
-    const data = await getBOMs(); // Changed API call
-    setBOMs(data); // Changed setter
+    const data = await getBOMs();
+    setBOMs(data);
   };
 
   useEffect(() => {
@@ -21,24 +19,26 @@ export default function BillOfMaterialsPage() {
   }, []);
 
   const columns: ColumnDef<BOM>[] = [
-    // Changed ColumnDef type
     {
       accessorKey: "id",
       header: "ID",
       cell: ({ row }) => {
-        const parsedId = parseID("BOM", row.getValue("id")); // Changed prefix
+        const parsedId = parseID("BOM", row.getValue("id"));
         return parsedId;
       },
     },
     {
-      accessorKey: "productName", // Changed accessorKey
-      header: "Product Name", // Changed header
+      accessorKey: "productName",
+      header: "Product Name",
     },
     {
       accessorKey: "components",
       header: "Components",
       cell: ({ row }) => {
-        const components: any[] = row.getValue("components");
+        const components = row.getValue("components") as {
+          materialId: string;
+          quantity: number;
+        }[];
         return (
           <ul className="list-disc list-inside">
             {components.map((comp, index) => (
@@ -64,10 +64,9 @@ export default function BillOfMaterialsPage() {
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-4">Bill of Materials</h1>
       <div className="flex justify-start mb-4">
-        <AddBOMDialog onSuccess={fetchBOMs} />{" "}
-        {/* Changed component and prop */}
+        <AddBOMDialog onSuccess={fetchBOMs} />
       </div>
-      <DataTable columns={columns} data={boms} /> {/* Changed data prop */}
+      <DataTable columns={columns} data={boms} />
     </div>
   );
 }

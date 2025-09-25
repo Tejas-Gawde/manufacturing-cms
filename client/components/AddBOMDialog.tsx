@@ -227,7 +227,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
               ))}
             </div>
 
-            {/* Work Orders Section */}
             <div className="flex items-center justify-between">
               <Label className="font-semibold text-base">
                 Work Orders <span className="text-red-500">*</span>
