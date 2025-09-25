@@ -44,4 +44,13 @@ await pool.query(`
   )
 `);
 
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS boms (
+    id SERIAL PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    components JSONB NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  )
+`);
+
 export const db = drizzle(pool);
