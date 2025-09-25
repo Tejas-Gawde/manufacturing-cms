@@ -14,7 +14,7 @@ export async function listBOMs(req, res) {
 
 export async function createBOM(req, res) {
   try {
-    const { productName, components } = req.body;
+    const { productName, components, workOrder } = req.body;
 
     if (
       !productName ||
@@ -29,7 +29,7 @@ export async function createBOM(req, res) {
 
     const [newBOM] = await db
       .insert(boms)
-      .values({ productName, components })
+      .values({ productName, components, workOrder })
       .returning();
 
     return res.status(201).json({ item: newBOM });

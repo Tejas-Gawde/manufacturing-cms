@@ -30,7 +30,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/work-centers", workCenterRoutes);
-app.use("/api/bom", bomRoutes);
+app.use("/api/boms", bomRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

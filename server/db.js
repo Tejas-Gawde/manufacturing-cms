@@ -49,6 +49,7 @@ await pool.query(`
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
     components JSONB NOT NULL,
+    work_order JSONB NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
   )
 `);

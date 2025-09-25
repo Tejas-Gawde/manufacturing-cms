@@ -9,7 +9,8 @@ import {
 export const boms = pgTable("boms", {
   id: serial("id").primaryKey(),
   productName: varchar("product_name", { length: 255 }).notNull(),
-  components: jsonb("components").notNull(), // Array of { material_id: string, quantity: number }
+  components: jsonb("components").notNull(),
+  workOrder: jsonb("work_order").notNull(),
   createdAt: timestamp("created_at", { withTimezone: false })
     .defaultNow()
     .notNull(),
