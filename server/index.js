@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.js";
+import stockRoutes from "./routes/stock.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -25,6 +26,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/stock", stockRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

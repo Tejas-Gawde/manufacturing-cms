@@ -19,4 +19,18 @@ await pool.query(`
   )
 `);
 
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS stock_ledger (
+    id SERIAL PRIMARY KEY,
+    material_name VARCHAR(255) NOT NULL,
+    material_type VARCHAR(20) NOT NULL CHECK (material_type IN ('finished_goods','raw_materials')),
+    quantity INTEGER NOT NULL,
+    unit VARCHAR(20) NOT NULL DEFAULT 'piece',
+    unit_cost INTEGER NOT NULL,
+    total_value INTEGER GENERATED ALWAYS AS (quantity * unit_cost) STORED,
+    date TIMESTAMP NOT NULL DEFAULT NOW(), -- Re-added
+    work_order_id INTEGER,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  )
+`);
 export const db = drizzle(pool);
