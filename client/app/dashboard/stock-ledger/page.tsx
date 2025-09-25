@@ -11,9 +11,32 @@ import {
   BalanceItem,
 } from "@/api/stock";
 import { AddStockDialog } from "@/components/AddStockDialogue";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Define types for the data
 const ledgerColumns: ColumnDef<LedgerItem>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   { accessorKey: "id", header: "ID" },
   { accessorKey: "date", header: "Date" },
   { accessorKey: "materialName", header: "Material" },
@@ -26,7 +49,6 @@ const ledgerColumns: ColumnDef<LedgerItem>[] = [
     header: "Total Value",
     cell: ({ row }) => {
       const totalValue = parseFloat(row.getValue("totalValue"));
-      console.log(Math.abs(totalValue), "heheh");
       return Math.abs(totalValue);
     },
   },
@@ -34,6 +56,28 @@ const ledgerColumns: ColumnDef<LedgerItem>[] = [
 ];
 
 const balanceColumns: ColumnDef<BalanceItem>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   { accessorKey: "materialName", header: "Material" },
   { accessorKey: "materialType", header: "Type" },
   { accessorKey: "unit", header: "Unit" },

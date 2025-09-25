@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { addStockMovement, AddMovementPayload } from "@/api/stock";
+import { Plus } from "lucide-react";
 
 interface AddStockDialogProps {
   onSuccess: () => void;
@@ -52,9 +53,7 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
     }));
   };
 
-  const handleSelectChange = (
-    value: "finished_goods" | "raw_materials" | string
-  ) => {
+  const handleSelectChange = (value: "finished_goods" | "raw_materials") => {
     setNewMovement((prev) => ({
       ...prev,
       materialType: value,
@@ -73,9 +72,8 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
       await addStockMovement(newMovement);
       toast.success("Stock movement added successfully.");
       setIsDialogOpen(false);
-      onSuccess(); // Call onSuccess to refresh data in parent
+      onSuccess();
       setNewMovement({
-        // Reset form
         materialName: "",
         materialType: "raw_materials",
         quantity: 0,
@@ -93,7 +91,9 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button>Add Stock Movement</Button>
+        <Button variant="outline">
+          New <Plus />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -105,7 +105,7 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="materialName" className="text-right">
-              Material Name
+              Name <span className="text-red-500">*</span>
             </Label>
             <Input
               id="materialName"
@@ -114,9 +114,10 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
               className="col-span-3"
             />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="materialType" className="text-right">
-              Material Type
+              Material Type <span className="text-red-500">*</span>
             </Label>
             <Select
               value={newMovement.materialType}
@@ -131,21 +132,28 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
               </SelectContent>
             </Select>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="quantity" className="text-right">
-              Quantity
+              Quantity <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="quantity"
-              type="number"
-              value={newMovement.quantity}
-              onChange={handleInputChange}
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <Input
+                id="quantity"
+                type="number"
+                value={newMovement.quantity}
+                onChange={handleInputChange}
+                className="w-full"
+              />
+              <span className="text-xs text-muted-foreground block mt-1">
+                Put a minus ( - ) for reducing stock
+              </span>
+            </div>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="unit" className="text-right">
-              Unit
+              Unit <span className="text-red-500">*</span>
             </Label>
             <Select
               value={newMovement.unit}
@@ -158,13 +166,13 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
                 <SelectItem value="kg">Kg</SelectItem>
                 <SelectItem value="gram">Gram</SelectItem>
                 <SelectItem value="piece">Piece</SelectItem>
-                {/* Add more units as needed */}
               </SelectContent>
             </Select>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="unitCost" className="text-right">
-              Unit Cost
+              Unit Cost <span className="text-red-500">*</span>
             </Label>
             <Input
               id="unitCost"
@@ -174,6 +182,7 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
               className="col-span-3"
             />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="date" className="text-right">
               Date
@@ -186,6 +195,7 @@ export function AddStockDialog({ onSuccess }: AddStockDialogProps) {
               className="col-span-3"
             />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="workOrderId" className="text-right">
               Work Order ID
