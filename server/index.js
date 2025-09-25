@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.js";
 import stockRoutes from "./routes/stock.js";
+import workCenterRoutes from "./routes/workCenters.js"; // Import workCenterRoutes
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -25,8 +26,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.use("/auth", authRoutes);
-app.use("/stock", stockRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/stock", stockRoutes);
+app.use("/api/work-centers", workCenterRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

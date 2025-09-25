@@ -39,10 +39,15 @@ export default function DashboardLayout({
           Navigation
         </div>
 
-        <nav className="grid gap-2 pr-2">
+        <nav className="grid gap-2 pr-3">
           {navItems.map((item) => (
-            <Button key={item.label} variant="ghost" className="justify-start">
-              <a href={item.href} className="flex items-center space-x-3">
+            <Button
+              key={item.label}
+              variant="ghost"
+              className="justify-start"
+              asChild
+            >
+              <a href={item.href} className="flex items-center gap-3">
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
               </a>

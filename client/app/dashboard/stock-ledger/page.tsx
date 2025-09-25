@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/components/DataTable";
 
 import type { ColumnDef } from "@tanstack/react-table";
@@ -10,8 +10,9 @@ import {
   LedgerItem,
   BalanceItem,
 } from "@/api/stock";
-import { AddStockDialog } from "@/components/AddStockDialogue";
+import { AddStockDialog } from "@/components/AddStockDialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { parseID } from "@/lib/utils";
 
 // Define types for the data
 const ledgerColumns: ColumnDef<LedgerItem>[] = [
@@ -37,9 +38,23 @@ const ledgerColumns: ColumnDef<LedgerItem>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: "id", header: "ID" },
-  { accessorKey: "date", header: "Date" },
-  { accessorKey: "materialName", header: "Material" },
+  {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => {
+      const parsedId = parseID("ST", row.getValue("id"));
+      return parsedId;
+    },
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("date"));
+      return date.toUTCString();
+    },
+  },
+  { accessorKey: "materialName", header: "Name" },
   { accessorKey: "materialType", header: "Type" },
   { accessorKey: "quantity", header: "Quantity" },
   { accessorKey: "unit", header: "Unit" },
@@ -78,7 +93,7 @@ const balanceColumns: ColumnDef<BalanceItem>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: "materialName", header: "Material" },
+  { accessorKey: "materialName", header: "Name" },
   { accessorKey: "materialType", header: "Type" },
   { accessorKey: "unit", header: "Unit" },
   { accessorKey: "totalValue", header: "Total Value" },
@@ -91,10 +106,8 @@ export default function StockLedgerPage() {
   const [balanceData, setBalanceData] = useState<BalanceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Removed isDialogOpen and newMovement state
 
-  const fetchData = async () => {
-    // Extracted fetchData into a named function
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -111,16 +124,15 @@ export default function StockLedgerPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [view]);
 
   useEffect(() => {
     fetchData();
-  }, [view]);
-
-  // Removed handleInputChange, handleSelectChange, handleAddMovement functions
+  }, [fetchData]);
 
   return (
     <div className="space-y-4">
+      <h1 className="text-3xl font-bold mb-4">Stock</h1>
       <div className="flex gap-2 mb-2">
         <Button
           className={` ${view === "ledger" ? "bg-blue-600" : ""}`}

@@ -33,4 +33,15 @@ await pool.query(`
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
   )
 `);
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS work_centers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    capacity INTEGER NOT NULL,
+    cost_per_hour INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  )
+`);
+
 export const db = drizzle(pool);
