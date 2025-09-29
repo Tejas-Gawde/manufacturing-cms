@@ -66,7 +66,7 @@ export default function BillOfMaterialsPage() {
       <div className="flex justify-start mb-4">
         <AddBOMDialog onSuccess={fetchBOMs} />
       </div>
-      <DataTable columns={columns} data={boms} />
+      <DataTable filterValue="productName" columns={columns} data={boms} />
     </div>
   );
 }

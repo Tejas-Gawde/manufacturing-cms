@@ -12,7 +12,7 @@ import {
 } from "@/api/stock";
 import { AddStockDialog } from "@/components/AddStockDialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import { parseID } from "@/lib/utils";
+import { parseID, parseType } from "@/lib/utils";
 
 // Define types for the data
 const ledgerColumns: ColumnDef<LedgerItem>[] = [
@@ -55,7 +55,13 @@ const ledgerColumns: ColumnDef<LedgerItem>[] = [
     },
   },
   { accessorKey: "materialName", header: "Name" },
-  { accessorKey: "materialType", header: "Type" },
+  {
+    accessorKey: "materialType",
+    header: "Type",
+    cell: ({ row }) => {
+      return parseType(row.getValue("materialType"));
+    },
+  },
   { accessorKey: "quantity", header: "Quantity" },
   { accessorKey: "unit", header: "Unit" },
   { accessorKey: "unitCost", header: "Unit Cost" },
@@ -94,7 +100,13 @@ const balanceColumns: ColumnDef<BalanceItem>[] = [
     enableHiding: false,
   },
   { accessorKey: "materialName", header: "Name" },
-  { accessorKey: "materialType", header: "Type" },
+  {
+    accessorKey: "materialType",
+    header: "Type",
+    cell: ({ row }) => {
+      return parseType(row.getValue("materialType"));
+    },
+  },
   { accessorKey: "unit", header: "Unit" },
   { accessorKey: "totalValue", header: "Total Value" },
   { accessorKey: "balance", header: "Balance" },
@@ -153,9 +165,17 @@ export default function StockLedgerPage() {
       ) : error ? (
         <div className="text-red-500">{error}</div>
       ) : view === "ledger" ? (
-        <DataTable columns={ledgerColumns} data={ledgerData} />
+        <DataTable
+          filterValue="materialName"
+          columns={ledgerColumns}
+          data={ledgerData}
+        />
       ) : (
-        <DataTable columns={balanceColumns} data={balanceData} />
+        <DataTable
+          filterValue="materialName"
+          columns={balanceColumns}
+          data={balanceData}
+        />
       )}
     </div>
   );

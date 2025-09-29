@@ -56,7 +56,7 @@ export default function WorkCenterPage() {
       <div className="flex justify-start mb-4">
         <AddWorkCenterDialog onSuccess={fetchWorkCenters} />
       </div>
-      <DataTable columns={columns} data={workCenters} />
+      <DataTable filterValue="name" columns={columns} data={workCenters} />
     </div>
   );
 }

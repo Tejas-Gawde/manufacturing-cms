@@ -8,3 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 export function parseID(prefix: string, id: string) {
   return prefix + "-" + id.toString();
 }
+
+export function parseType(type: string): string {
+  if (type === "raw_materials") {
+    return "Raw Materials";
+  }
+  return "Finished Goods";
+}

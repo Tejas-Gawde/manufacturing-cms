@@ -36,11 +36,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterValue: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filterValue,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -73,10 +75,10 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Filter by Material Name..."
           value={
-            (table.getColumn("materialName")?.getFilterValue() as string) ?? ""
+            (table.getColumn(filterValue)?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("materialName")?.setFilterValue(event.target.value)
+            table.getColumn(filterValue)?.setFilterValue(event.target.value)
           }
           className="max-w-xs"
         />
