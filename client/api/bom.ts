@@ -13,6 +13,7 @@ export interface WorkOrderForBOM {
 export interface BOM {
   id: string;
   productName: string;
+  quantity: number;
   components: BOMComponent[];
   workOrder: WorkOrderForBOM[];
   createdAt: string;

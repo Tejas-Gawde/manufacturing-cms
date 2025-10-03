@@ -5,6 +5,8 @@ import authRoutes from "./routes/auth.js";
 import stockRoutes from "./routes/stock.js";
 import workCenterRoutes from "./routes/workCenters.js";
 import bomRoutes from "./routes/bom.js";
+import manufacturingOrderRoutes from "./routes/manufacturingOrders.js";
+import workOrderRoutes from "./routes/workOrders.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -31,6 +33,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/work-centers", workCenterRoutes);
 app.use("/api/boms", bomRoutes);
+app.use("/api/mos", manufacturingOrderRoutes);
+app.use("/api/work-orders", workOrderRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

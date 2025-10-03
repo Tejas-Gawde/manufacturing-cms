@@ -33,6 +33,7 @@ interface AddBOMDialogProps {
 export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [productName, setProductName] = useState("");
+  const [quantity, setQuantity] = useState<number>(0);
   const [components, setComponents] = useState<BOMComponent[]>([
     { materialId: "", quantity: 0 },
   ]);
@@ -52,6 +53,7 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
         toast.error("Failed to load available materials.");
       }
     }
+
     if (isDialogOpen) {
       fetchMaterials();
     }
@@ -59,6 +61,10 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
 
   const handleProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProductName(e.target.value);
+  };
+
+  const handlequantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(parseFloat(e.target.value) || 0);
   };
 
   const handleComponentChange = (
@@ -111,6 +117,7 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
     try {
       if (
         !productName ||
+        quantity <= 0 ||
         components.some((comp) => !comp.materialId || comp.quantity <= 0) ||
         workOrders.some((wo) => !wo.workOrderName || wo.time <= 0)
       ) {
@@ -122,13 +129,17 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
 
       await createBOM({
         productName,
+        quantity,
         components,
         workOrder: workOrders,
       });
+
       toast.success("BOM added successfully.");
       setIsDialogOpen(false);
       onSuccess();
+
       setProductName("");
+      setQuantity(0);
       setComponents([{ materialId: "", quantity: 0 }]);
       setWorkOrders([{ workOrderName: "", time: 0 }]);
     } catch (err) {
@@ -166,6 +177,20 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
               />
             </div>
 
+            {/* ✅ New Quantity Input */}
+            <div className="grid gap-4">
+              <Label htmlFor="quantity">
+                Product Quantity <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="quantity"
+                type="number"
+                value={quantity}
+                onChange={handlequantityChange}
+                placeholder="Enter quantity"
+              />
+            </div>
+
             <div className="flex items-center justify-between">
               <Label className="font-semibold text-base">
                 Components <span className="text-red-500">*</span>
@@ -175,6 +200,7 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
               </Button>
             </div>
 
+            {/* Components UI same as before */}
             <div className="space-y-3">
               {components.map((component, index) => (
                 <div
@@ -201,7 +227,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
                       </SelectContent>
                     </Select>
                   </div>
-
                   <div className="col-span-5">
                     <Label className="mb-1 block text-sm">Quantity</Label>
                     <Input
@@ -213,7 +238,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
                       }
                     />
                   </div>
-
                   <div className="col-span-2 flex justify-end">
                     <Button
                       variant="destructive"
@@ -256,7 +280,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
                       placeholder="Work order name"
                     />
                   </div>
-
                   <div className="col-span-4">
                     <Label className="mb-1 block text-sm">Time (hours)</Label>
                     <Input
@@ -268,7 +291,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
                       }
                     />
                   </div>
-
                   <div className="col-span-2 flex justify-end">
                     <Button
                       variant="destructive"
@@ -283,7 +305,6 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
             </div>
           </div>
         </ScrollArea>
-
         <DialogFooter>
           <Button type="submit" onClick={handleAddBOM}>
             Create BOM

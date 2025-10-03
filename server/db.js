@@ -48,8 +48,37 @@ await pool.query(`
   CREATE TABLE IF NOT EXISTS boms (
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL,
     components JSONB NOT NULL,
     work_order JSONB NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  )
+`);
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS manufacturing_orders (
+    id SERIAL PRIMARY KEY,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('planned', 'in_progress', 'done', 'canceled')),
+    deadline TIMESTAMP NOT NULL,
+    bom_id INTEGER NOT NULL REFERENCES boms(id),
+    work_center_id INTEGER NOT NULL REFERENCES work_centers(id),
+    created_by INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  )
+`);
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS work_orders (
+    id SERIAL PRIMARY KEY,
+    mo_id INTEGER NOT NULL REFERENCES manufacturing_orders(id),
+    assigned_to INTEGER REFERENCES users(id),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'started', 'paused', 'completed')),
+    step_name VARCHAR(255) NOT NULL,
+    estimated_time INTEGER NOT NULL,
+    inherited_from_bom BOOLEAN NOT NULL DEFAULT FALSE,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
+    comments TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
   )
 `);
