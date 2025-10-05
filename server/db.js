@@ -58,11 +58,14 @@ await pool.query(`
 await pool.query(`
   CREATE TABLE IF NOT EXISTS manufacturing_orders (
     id SERIAL PRIMARY KEY,
+    product_name VARCHAR(255),
     status VARCHAR(20) NOT NULL CHECK (status IN ('planned', 'in_progress', 'done', 'canceled')),
     deadline TIMESTAMP NOT NULL,
-    bom_id INTEGER NOT NULL REFERENCES boms(id),
+    bom_id INTEGER REFERENCES boms(id),
     work_center_id INTEGER NOT NULL REFERENCES work_centers(id),
     created_by INTEGER NOT NULL REFERENCES users(id),
+    components JSONB NOT NULL,
+    work_orders JSONB NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
   )
 `);

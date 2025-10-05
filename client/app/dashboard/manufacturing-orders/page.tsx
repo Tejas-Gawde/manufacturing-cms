@@ -1,7 +1,14 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
-import { ManufacturingOrder, getManufacturingOrders, updateManufacturingOrder, deleteManufacturingOrder, getManufacturingOrderDetails, ManufacturingOrderDetails } from "@/api/manufacturingOrders";
+import {
+  ManufacturingOrder,
+  getManufacturingOrders,
+  updateManufacturingOrder,
+  deleteManufacturingOrder,
+  getManufacturingOrderDetails,
+  ManufacturingOrderDetails,
+} from "@/api/manufacturingOrders";
 import { useEffect, useState } from "react";
 import { AddManufacturingOrderDialog } from "@/components/AddManufacturingOrderDialog";
 import { parseID } from "@/lib/utils";
@@ -17,17 +24,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ManufacturingOrderDetailsDialog } from "@/components/ManufacturingOrderDetailsDialog";
 
 export default function ManufacturingOrdersPage() {
-  const [manufacturingOrders, setManufacturingOrders] = useState<ManufacturingOrder[]>([]);
-  const [selectedMO, setSelectedMO] = useState<ManufacturingOrderDetails | null>(null);
+  const [manufacturingOrders, setManufacturingOrders] = useState<
+    ManufacturingOrder[]
+  >([]);
+  const [selectedMO, setSelectedMO] =
+    useState<ManufacturingOrderDetails | null>(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
 
   const fetchManufacturingOrders = async () => {
@@ -46,20 +50,23 @@ export default function ManufacturingOrdersPage() {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'planned':
-        return 'secondary';
-      case 'in_progress':
-        return 'default';
-      case 'done':
-        return 'outline';
-      case 'canceled':
-        return 'destructive';
+      case "planned":
+        return "secondary";
+      case "in_progress":
+        return "default";
+      case "done":
+        return "outline";
+      case "canceled":
+        return "destructive";
       default:
-        return 'secondary';
+        return "secondary";
     }
   };
 
-  const handleStatusUpdate = async (id: string, newStatus: 'planned' | 'in_progress' | 'done' | 'canceled') => {
+  const handleStatusUpdate = async (
+    id: string,
+    newStatus: "planned" | "in_progress" | "done" | "canceled"
+  ) => {
     try {
       await updateManufacturingOrder(id, { status: newStatus });
       toast.success("Status updated successfully");
@@ -71,7 +78,11 @@ export default function ManufacturingOrdersPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this manufacturing order?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this manufacturing order?"
+      )
+    ) {
       try {
         await deleteManufacturingOrder(id);
         toast.success("Manufacturing order deleted successfully");
@@ -104,8 +115,9 @@ export default function ManufacturingOrdersPage() {
       },
     },
     {
-      accessorKey: "bomName",
+      accessorKey: "productName",
       header: "Product",
+      cell: ({ row }) => row.original.productName || row.original.bomName,
     },
     {
       accessorKey: "workCenterName",
@@ -118,7 +130,7 @@ export default function ManufacturingOrdersPage() {
         const status = row.getValue("status") as string;
         return (
           <Badge variant={getStatusBadgeVariant(status)}>
-            {status.replace('_', ' ').toUpperCase()}
+            {status.replace("_", " ").toUpperCase()}
           </Badge>
         );
       },
@@ -163,24 +175,30 @@ export default function ManufacturingOrdersPage() {
                 View Details
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {mo.status !== 'done' && mo.status !== 'canceled' && (
+              {mo.status !== "done" && mo.status !== "canceled" && (
                 <>
-                  <DropdownMenuItem onClick={() => handleStatusUpdate(mo.id, 'in_progress')}>
+                  <DropdownMenuItem
+                    onClick={() => handleStatusUpdate(mo.id, "in_progress")}
+                  >
                     <Edit className="mr-2 h-4 w-4" />
                     Start Production
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleStatusUpdate(mo.id, 'done')}>
+                  <DropdownMenuItem
+                    onClick={() => handleStatusUpdate(mo.id, "done")}
+                  >
                     <Edit className="mr-2 h-4 w-4" />
                     Mark Complete
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleStatusUpdate(mo.id, 'canceled')}>
+                  <DropdownMenuItem
+                    onClick={() => handleStatusUpdate(mo.id, "canceled")}
+                  >
                     <Edit className="mr-2 h-4 w-4" />
                     Cancel Order
                   </DropdownMenuItem>
                 </>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => handleDelete(mo.id)}
                 className="text-red-600"
               >
@@ -194,13 +212,14 @@ export default function ManufacturingOrdersPage() {
     },
   ];
 
-  // Calculate statistics
   const stats = {
     total: manufacturingOrders.length,
-    planned: manufacturingOrders.filter(mo => mo.status === 'planned').length,
-    inProgress: manufacturingOrders.filter(mo => mo.status === 'in_progress').length,
-    done: manufacturingOrders.filter(mo => mo.status === 'done').length,
-    canceled: manufacturingOrders.filter(mo => mo.status === 'canceled').length,
+    planned: manufacturingOrders.filter((mo) => mo.status === "planned").length,
+    inProgress: manufacturingOrders.filter((mo) => mo.status === "in_progress")
+      .length,
+    done: manufacturingOrders.filter((mo) => mo.status === "done").length,
+    canceled: manufacturingOrders.filter((mo) => mo.status === "canceled")
+      .length,
   };
 
   return (
@@ -210,18 +229,21 @@ export default function ManufacturingOrdersPage() {
         <AddManufacturingOrderDialog onSuccess={fetchManufacturingOrders} />
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
         <div className="bg-card border rounded-lg p-4">
           <div className="text-2xl font-bold">{stats.total}</div>
           <div className="text-sm text-muted-foreground">Total Orders</div>
         </div>
         <div className="bg-card border rounded-lg p-4">
-          <div className="text-2xl font-bold text-blue-600">{stats.planned}</div>
+          <div className="text-2xl font-bold text-blue-600">
+            {stats.planned}
+          </div>
           <div className="text-sm text-muted-foreground">Planned</div>
         </div>
         <div className="bg-card border rounded-lg p-4">
-          <div className="text-2xl font-bold text-orange-600">{stats.inProgress}</div>
+          <div className="text-2xl font-bold text-orange-600">
+            {stats.inProgress}
+          </div>
           <div className="text-sm text-muted-foreground">In Progress</div>
         </div>
         <div className="bg-card border rounded-lg p-4">
@@ -229,116 +251,25 @@ export default function ManufacturingOrdersPage() {
           <div className="text-sm text-muted-foreground">Completed</div>
         </div>
         <div className="bg-card border rounded-lg p-4">
-          <div className="text-2xl font-bold text-red-600">{stats.canceled}</div>
+          <div className="text-2xl font-bold text-red-600">
+            {stats.canceled}
+          </div>
           <div className="text-sm text-muted-foreground">Canceled</div>
         </div>
       </div>
-      
-      <DataTable filterValue="bomName" columns={columns} data={manufacturingOrders} />
 
-      {/* Details Dialog */}
-      <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Manufacturing Order Details</DialogTitle>
-            <DialogDescription>
-              Detailed information about the manufacturing order and its work orders.
-            </DialogDescription>
-          </DialogHeader>
-          {selectedMO && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Order Information</h3>
-                  <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
-                    <div className="flex justify-between">
-                      <span className="font-medium">ID:</span>
-                      <span>{parseID("MO", selectedMO.id)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Product:</span>
-                      <span>{selectedMO.bomName}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Work Center:</span>
-                      <span>{selectedMO.workCenterName}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Status:</span>
-                      <Badge variant={getStatusBadgeVariant(selectedMO.status)}>
-                        {selectedMO.status.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Deadline:</span>
-                      <span>{new Date(selectedMO.deadline).toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Created By:</span>
-                      <span>{selectedMO.creatorName}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Created At:</span>
-                      <span>{new Date(selectedMO.createdAt).toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
+      <DataTable
+        filterValue="productName"
+        columns={columns}
+        data={manufacturingOrders}
+      />
 
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Work Orders</h3>
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-                    {selectedMO.workOrders && selectedMO.workOrders.length > 0 ? (
-                      selectedMO.workOrders.map((workOrder) => (
-                        <div key={workOrder.id} className="p-4 bg-background border rounded-lg">
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium">{workOrder.stepName}</h4>
-                            <Badge variant={getStatusBadgeVariant(workOrder.status)}>
-                              {workOrder.status.toUpperCase()}
-                            </Badge>
-                          </div>
-                          <div className="space-y-1 text-sm text-muted-foreground">
-                            <div className="flex justify-between">
-                              <span>Estimated Time:</span>
-                              <span>{workOrder.estimatedTime} minutes</span>
-                            </div>
-                            {workOrder.assignedUserName && (
-                              <div className="flex justify-between">
-                                <span>Assigned To:</span>
-                                <span>{workOrder.assignedUserName}</span>
-                              </div>
-                            )}
-                            {workOrder.startedAt && (
-                              <div className="flex justify-between">
-                                <span>Started At:</span>
-                                <span>{new Date(workOrder.startedAt).toLocaleString()}</span>
-                              </div>
-                            )}
-                            {workOrder.completedAt && (
-                              <div className="flex justify-between">
-                                <span>Completed At:</span>
-                                <span>{new Date(workOrder.completedAt).toLocaleString()}</span>
-                              </div>
-                            )}
-                            {workOrder.comments && (
-                              <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
-                                <span className="font-medium">Comments:</span> {workOrder.comments}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="p-4 text-center text-muted-foreground">
-                        No work orders found for this manufacturing order.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ManufacturingOrderDetailsDialog
+        open={isDetailsDialogOpen}
+        onOpenChange={setIsDetailsDialogOpen}
+        details={selectedMO}
+        getStatusBadgeVariant={getStatusBadgeVariant}
+      />
     </div>
   );
 }

@@ -4,13 +4,30 @@ export interface ManufacturingOrder {
   id: string;
   status: 'planned' | 'in_progress' | 'done' | 'canceled';
   deadline: string;
-  bomId: number;
+  bomId: number | null;
   workCenterId: number;
   createdBy: number;
   createdAt: string;
+  components: Component[];
+  workOrders: WorkOrderStep[];
+  productName?: string;
   bomName: string;
   workCenterName: string;
   creatorName: string;
+}
+
+export interface Component {
+  material_name: string;
+  materialId?: string;
+  qty: number;
+  unit: string;
+  unit_cost: number;
+  quantity?: number;
+}
+
+export interface WorkOrderStep {
+  step_name: string;
+  estimated_time: number;
 }
 
 export interface WorkOrder {
@@ -28,19 +45,20 @@ export interface WorkOrder {
   assignedUserName?: string;
 }
 
-export interface ManufacturingOrderDetails extends ManufacturingOrder {
+export interface ManufacturingOrderDetails extends Omit<ManufacturingOrder, 'workOrders'> {
   workOrders: WorkOrder[];
 }
 
 export interface CreateManufacturingOrderRequest {
   status: 'planned' | 'in_progress' | 'done' | 'canceled';
   deadline: string;
-  bom_id: number;
   work_center_id: number;
-  customWorkOrders?: {
-    step_name: string;
-    estimated_time: number;
-  }[];
+  // BOM-based creation
+  bom_id?: number;
+  // Manual creation
+  components?: Component[];
+  work_orders?: WorkOrderStep[];
+  product_name?: string; // required for manual creation
 }
 
 export async function getManufacturingOrders(): Promise<ManufacturingOrder[]> {

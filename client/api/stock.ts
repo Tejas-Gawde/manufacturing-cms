@@ -17,6 +17,8 @@ export interface BalanceItem {
   materialName: string;
   materialType: string;
   balance: number;
+  unit: string;
+  unitCost: number;
 }
 
 export interface ListStockParams {

@@ -1,6 +1,6 @@
 import { db } from "../db.js";
 import { stockLedger } from "../schema/stockLedger.js";
-import { and, asc, desc, gte, ilike, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
 
 export async function listStock(req, res) {
   try {
@@ -19,7 +19,6 @@ export async function listStock(req, res) {
 
     const where = filters.length ? and(...filters) : undefined;
 
-    // Aggregate to current balance per item (by name and type)
     const rows = await db
       .select({
         materialName: stockLedger.materialName,
@@ -30,13 +29,15 @@ export async function listStock(req, res) {
           sql`SUM(${stockLedger.quantity} * ${stockLedger.unitCost})`.as(
             "totalValue"
           ),
+        unitCost: stockLedger.unitCost,
       })
       .from(stockLedger)
       .where(where)
       .groupBy(
         stockLedger.materialName,
         stockLedger.materialType,
-        stockLedger.unit
+        stockLedger.unit,
+        stockLedger.unitCost
       )
       .orderBy(desc(sql`SUM(${stockLedger.quantity})`));
 
@@ -112,5 +113,45 @@ export async function addMovement(req, res) {
     return res.status(201).json({ item: created });
   } catch (err) {
     return res.status(500).json({ error: "Failed to add stock movement" });
+  }
+}
+
+export async function getAvailableStockItems(req, res) {
+  try {
+    const { material_type, search } = req.query;
+
+    const filters = [];
+    if (material_type) {
+      filters.push(eq(stockLedger.materialType, material_type));
+    }
+    if (search) {
+      filters.push(ilike(stockLedger.materialName, `%${search}%`));
+    }
+
+    const where = filters.length ? and(...filters) : undefined;
+
+    const stockItems = await db
+      .select({
+        materialName: stockLedger.materialName,
+        materialType: stockLedger.materialType,
+        balance: sql`SUM(${stockLedger.quantity})`.as("balance"),
+        unit: stockLedger.unit,
+        unitCost: sql`AVG(${stockLedger.unitCost})`.as("unitCost"),
+        totalValue: sql`SUM(${stockLedger.quantity} * ${stockLedger.unitCost})`.as("totalValue"),
+      })
+      .from(stockLedger)
+      .where(where)
+      .groupBy(
+        stockLedger.materialName,
+        stockLedger.materialType,
+        stockLedger.unit
+      )
+      .having(sql`SUM(${stockLedger.quantity}) > 0`)
+      .orderBy(stockLedger.materialName);
+
+    return res.json({ items: stockItems });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to fetch available stock items" });
   }
 }

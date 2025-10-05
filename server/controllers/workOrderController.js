@@ -1,9 +1,9 @@
 import { db } from "../db.js";
-import { workOrders, manufacturingOrders } from "../schema/manufacturingOrders.js";
+import { manufacturingOrders } from "../schema/manufacturingOrders.js";
+import { workOrders } from "../schema/workOrders.js";
 import { users } from "../schema/users.js";
 import { eq, and, desc } from "drizzle-orm";
 
-// List work orders with filters
 export async function listWorkOrders(req, res) {
   try {
     const { status, assigned_to, mo_id } = req.query;
@@ -29,7 +29,6 @@ export async function listWorkOrders(req, res) {
       .leftJoin(manufacturingOrders, eq(workOrders.moId, manufacturingOrders.id))
       .orderBy(desc(workOrders.createdAt));
 
-    // Apply filters
     if (status) {
       query = query.where(eq(workOrders.status, status));
     }
@@ -48,7 +47,6 @@ export async function listWorkOrders(req, res) {
   }
 }
 
-// Get work order details
 export async function getWorkOrderDetails(req, res) {
   try {
     const { id } = req.params;
@@ -85,14 +83,12 @@ export async function getWorkOrderDetails(req, res) {
   }
 }
 
-// Update work order (for operators to start, pause, complete)
 export async function updateWorkOrder(req, res) {
   try {
     const { id } = req.params;
     const { status, assigned_to, comments } = req.body;
     const userId = req.user.id;
 
-    // Check if work order exists
     const [existingWO] = await db
       .select()
       .from(workOrders)
@@ -102,7 +98,6 @@ export async function updateWorkOrder(req, res) {
       return res.status(404).json({ error: "Work order not found" });
     }
 
-    // Validate status if provided
     if (status) {
       const validStatuses = ['pending', 'started', 'paused', 'completed'];
       if (!validStatuses.includes(status)) {
@@ -112,12 +107,10 @@ export async function updateWorkOrder(req, res) {
       }
     }
 
-    // Prepare update data
     const updateData = {};
     if (status) {
       updateData.status = status;
       
-      // Set timestamps based on status
       if (status === 'started' && !existingWO.startedAt) {
         updateData.startedAt = new Date();
       }
@@ -132,7 +125,6 @@ export async function updateWorkOrder(req, res) {
       updateData.comments = comments;
     }
 
-    // Update the work order
     const [updatedWO] = await db
       .update(workOrders)
       .set(updateData)
@@ -146,7 +138,6 @@ export async function updateWorkOrder(req, res) {
   }
 }
 
-// Assign work order to user
 export async function assignWorkOrder(req, res) {
   try {
     const { id } = req.params;
@@ -156,13 +147,11 @@ export async function assignWorkOrder(req, res) {
       return res.status(400).json({ error: "assigned_to is required" });
     }
 
-    // Verify user exists
     const [user] = await db.select().from(users).where(eq(users.id, assigned_to));
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if work order exists
     const [existingWO] = await db
       .select()
       .from(workOrders)
@@ -172,7 +161,6 @@ export async function assignWorkOrder(req, res) {
       return res.status(404).json({ error: "Work order not found" });
     }
 
-    // Update the work order
     const [updatedWO] = await db
       .update(workOrders)
       .set({ assignedTo: assigned_to })
@@ -186,7 +174,6 @@ export async function assignWorkOrder(req, res) {
   }
 }
 
-// Get work orders for a specific user (operator dashboard)
 export async function getMyWorkOrders(req, res) {
   try {
     const userId = req.user.id;
@@ -212,7 +199,6 @@ export async function getMyWorkOrders(req, res) {
       .where(eq(workOrders.assignedTo, userId))
       .orderBy(desc(workOrders.createdAt));
 
-    // Apply status filter if provided
     if (status) {
       query = query.where(and(
         eq(workOrders.assignedTo, userId),

@@ -10,6 +10,7 @@ import { authMiddleware } from "../utils/jwt.js";
 
 const router = express.Router();
 
+router.use(authMiddleware());
 
 router.get("/", authMiddleware(["admin", "manager"]), listWorkOrders);
 router.get("/my", getMyWorkOrders);
