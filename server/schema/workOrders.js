@@ -1,3 +1,4 @@
+import { boolean, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const workOrders = pgTable("work_orders", {
     id: serial("id").primaryKey(),

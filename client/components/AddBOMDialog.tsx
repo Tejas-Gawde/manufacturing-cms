@@ -281,7 +281,7 @@ export function AddBOMDialog({ onSuccess }: AddBOMDialogProps) {
                     />
                   </div>
                   <div className="col-span-4">
-                    <Label className="mb-1 block text-sm">Time (hours)</Label>
+                    <Label className="mb-1 block text-sm">Time (mins)</Label>
                     <Input
                       type="number"
                       placeholder="Time"
