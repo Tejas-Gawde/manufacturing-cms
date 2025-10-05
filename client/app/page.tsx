@@ -1,103 +1,278 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Particles } from "@/components/ui/particles";
+import { SpinningText } from "@/components/ui/spinning-text";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="bg-background">
+      <Particles
+        quantity={200}
+        className="absolute w-full h-full"
+        color="black"
+      />
+      <SpinningText className="fixed bottom-20 right-20">
+        Try for free - Try for free -
+      </SpinningText>
+      <section className="px-6 py-24 md:py-32 h-screen flex items-center justify-center">
+        <div className="mx-auto max-w-5xl text-center">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            Streamline Your Manufacturing
+          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            From Idea to Inventory
+          </h1>
+          <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
+            Plan, execute, and track every step of production with smart BOMs,
+            flexible manufacturing orders, real-time stock, and actionable
+            analytics - all in one place.
+          </p>
+          <div className="mt-10 flex items-center justify-center gap-3">
+            <Button asChild size="lg">
+              <Link href="/auth/signup">Get Started</Link>
+            </Button>
+            <Button asChild variant="secondary" size="lg">
+              <Link href="/dashboard/manufacturing-orders">
+                Create Manufacturing Order
+              </Link>
+            </Button>
+          </div>
         </div>
-      </div>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      <section className="px-6 pb-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-semibold">
+              Everything you need to run production
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Purpose-built capabilities to plan, execute, and improve
+              manufacturing.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.07a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.07a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.02 3.6l.06.06c.48.48 1.17.62 1.82.33A1.65 1.65 0 0 0 10.4 2.5V2a2 2 0 1 1 4 0v.07c0 .67.39 1.27 1 1.51.65.29 1.34.15 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.48.48-.62 1.17-.33 1.82.24.61.84 1 1.51 1H22a2 2 0 1 1 0 4h-.07c-.67 0-1.27.39-1.51 1Z" />
+                  </svg>
+                </div>
+                <CardTitle>Smart BOM Automation</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Generate materials and components automatically, reduce errors,
+                and standardize assemblies with reusable templates.
+              </CardContent>
+            </Card>
+
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <rect x="9" y="2" width="6" height="4" rx="1" />
+                    <path d="M9 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
+                  </svg>
+                </div>
+                <CardTitle>Manual & Flexible MO Creation</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Create manufacturing orders on the fly with full control over
+                steps, assignees, resources, and timing.
+              </CardContent>
+            </Card>
+
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                    <path d="M3.3 7L12 12l8.7-5" />
+                    <path d="M12 22V12" />
+                  </svg>
+                </div>
+                <CardTitle>Real-Time Stock & Ledger</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Always know what you have on hand. Movements are logged
+                instantly and transparently across locations.
+              </CardContent>
+            </Card>
+
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M6 7h5a3 3 0 0 1 3 3v4a3 3 0 0 0 3 3h1" />
+                    <circle cx="6" cy="7" r="2" />
+                    <circle cx="18" cy="17" r="2" />
+                  </svg>
+                </div>
+                <CardTitle>Production Workflow Management</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Orchestrate steps across work centers, eliminate bottlenecks,
+                and keep teams aligned.
+              </CardContent>
+            </Card>
+
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      d="M5 3l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4Z"
+                      transform="translate(7 3) scale(.6)"
+                    />
+                    <path d="M12 3l1.5 3 3 1.5-3 1.5L12 12l-1.5-3L7.5 7.5 10 6 12 3Z" />
+                  </svg>
+                </div>
+                <CardTitle>AI-Powered Batch Reporting</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Summarize outcomes, yields, and downtime automatically with
+                AI-assisted batch insights.
+              </CardContent>
+            </Card>
+
+            <Card className="transition-shadow hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M3 3v18h18" />
+                    <rect x="6" y="12" width="3" height="6" />
+                    <rect x="11" y="9" width="3" height="9" />
+                    <rect x="16" y="6" width="3" height="12" />
+                  </svg>
+                </div>
+                <CardTitle>Analytics Dashboard & Insights</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Monitor KPIs like throughput, lead time, and utilization — all
+                in real time.
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-semibold">
+              Loved by modern manufacturers
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Real teams. Real results.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-muted-foreground/20">
+              <CardContent className="pt-6">
+                <blockquote className="text-base md:text-lg leading-relaxed">
+                  “We went from spreadsheets and delays to full visibility
+                  across every order. Our lead times dropped by 28% in the first
+                  quarter.”
+                </blockquote>
+                <div className="mt-5 flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                    AR
+                  </div>
+                  <div>
+                    <div className="font-medium">Alex Romero</div>
+                    <div className="text-sm text-muted-foreground">
+                      Operations Director · Horizon Fabrication
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-muted-foreground/20">
+              <CardContent className="pt-6">
+                <blockquote className="text-base md:text-lg leading-relaxed">
+                  “The stock ledger and MO tracking gave us the control we were
+                  missing. Variance is down and throughput is up and
+                  increasing.”
+                </blockquote>
+                <div className="mt-5 flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                    SJ
+                  </div>
+                  <div>
+                    <div className="font-medium">Sofia Jiang</div>
+                    <div className="text-sm text-muted-foreground">
+                      Plant Manager · Apex Composites
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-muted-foreground/20">
+              <CardContent className="pt-6">
+                <blockquote className="text-base md:text-lg leading-relaxed">
+                  “We finally have a single source of truth from BOM to
+                  shipment. Teams coordinate better and problems surface
+                  earlier.”
+                </blockquote>
+                <div className="mt-5 flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                    MK
+                  </div>
+                  <div>
+                    <div className="font-medium">Marcus Klein</div>
+                    <div className="text-sm text-muted-foreground">
+                      Head of Operations · Nova Assemblies
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
