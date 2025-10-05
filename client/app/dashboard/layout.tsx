@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Home, Box, Layers, Settings, FileText, Clipboard } from "lucide-react"; // Importing Lucide icons
 
@@ -26,6 +27,13 @@ const navItems = [
     icon: <Clipboard />,
   },
 ];
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | FlowForge",
+    default: "Dashboard | FlowForge",
+  },
+};
 
 export default function DashboardLayout({
   children,
